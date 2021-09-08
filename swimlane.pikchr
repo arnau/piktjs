@@ -1,0 +1,107 @@
+# demo label: Swimlanes
+$laneh = 0.8
+
+Lane1: [
+    B1: box width 3.5in height $laneh fill azure
+    line from B1.sw+(0.2, 0) up until even with B1.n \
+        "Azure" above aligned
+
+    right
+
+    A1: circle rad 0.1in at end of first line + (0.2,-0.2) \
+       fill white thickness 1.5px "1"
+
+    move
+
+    A2: circle same "2"
+
+    move
+
+    An: circle same "n" at B1.e-(0.2, -0.2) thickness 3px
+
+    arrow from A1.end to A2.start
+    arrow from A2.end to An.start
+
+    A3: circle same at A2+(0, -0.4) "3" fill 0xc0c0c0 thickness 1.5px
+
+    arrow from A1 chop right until even with A2-(0.5, 0) \
+      then to A3.w-(0.3, 0) rad 40px \
+      then to A3.w
+]
+
+Lane2: [
+    B1: box width 3.5in height $laneh fill beige
+    line from B1.sw+(0.2, 0) up until even with B1.n \
+        "Beige" above aligned
+
+    right
+
+    A1: circle rad 0.1in at end of first line + (0.2,-0.2) \
+       fill white thickness 1.5px "1"
+
+    move
+
+    A2: circle same "2"
+
+    move
+
+    An: circle same "n" at B1.e-(0.2, -0.2) thickness 3px
+
+    arrow from A1.end to A2.start
+    arrow from A2.end to An.start
+
+    A3: circle same at A2+(0, -0.4) "3" thickness 1.5px
+
+    arrow from A1 chop right until even with A2-(0.5, 0) \
+      then to A3.w-(0.3, 0) rad 40px \
+      then to A3.w
+
+    right; move
+
+    A4: circle same as A3 "4" fill 0xc0c0c0
+
+    arrow from A3 to A4 chop
+
+
+] at (0, -$laneh)
+
+Lane3: [
+    B1: box width 3.5in height $laneh fill cornsilk
+    line from B1.sw+(0.2, 0) up until even with B1.n \
+        "Cornsilk" above aligned
+
+    right
+
+    A1: circle rad 0.1in at end of first line + (0.2,-0.2) \
+       fill white thickness 1.5px "1"
+
+    move
+
+    A2: circle same "2"
+
+    move
+
+    An: circle same "n" at B1.e-(0.2, -0.2) thickness 3px
+
+    arrow from A1.end to A2.start
+    arrow from A2.end to An.start
+
+    A3: circle same at A2+(0, -0.4) "3" thickness 1.5px
+
+    arrow from A1 chop right until even with A2-(0.5, 0) \
+      then to A3.w-(0.3, 0) rad 40px \
+      then to A3.w
+
+    right; move
+
+    A4: circle same as A3 "4"
+
+    arrow from A3 to A4 chop
+
+    A5: circle same as A2 at A2+(1.2, 0) "5" fill 0xc0c0c0
+
+    arrow from A4.e chop right until even with A5-(0.45, 0) \
+      then to A5.w-(0.2, 0) rad 40px \
+      then to A5.w
+
+] at (0, -$laneh * 2)

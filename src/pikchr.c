@@ -13,13 +13,13 @@
 ** This software translates a PIC-inspired diagram language into SVG.
 **
 ** PIKCHR (pronounced like "picture") is *mostly* backwards compatible
-** with legacy PIC, though some features of legacy PIC are removed 
+** with legacy PIC, though some features of legacy PIC are removed
 ** (for example, the "sh" command is removed for security) and
 ** many enhancements are added.
 **
 ** PIKCHR is designed for use in an internet facing web environment.
 ** In particular, PIKCHR is designed to safely generate benign SVG from
-** source text that provided by a hostile agent. 
+** source text that provided by a hostile agent.
 **
 ** This code was originally written by D. Richard Hipp using documentation
 ** from prior PIC implementations but without reference to prior code.
@@ -61,7 +61,7 @@
 ** Add -DPIKCHR_SHELL to add a main() routine that reads input files
 ** and sends them through Pikchr, for testing.  Add -DPIKCHR_FUZZ for
 ** -fsanitizer=fuzzer testing.
-** 
+**
 ****************************************************************************
 ** IMPLEMENTATION NOTES (for people who want to understand the internal
 ** operation of this software, perhaps to extend the code or to fix bugs):
@@ -122,6 +122,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <assert.h>
+#include <sanitizer/lsan_interface.h>
 #define count(X) (sizeof(X)/sizeof(X[0]))
 #ifndef M_PI
 # define M_PI 3.1415926535897932385
@@ -224,7 +225,7 @@ struct PRel {
   PNum rRel;            /* Value relative to current value */
 };
 
-/* A variable created by the ID = EXPR construct of the PIKCHR script 
+/* A variable created by the ID = EXPR construct of the PIKCHR script
 **
 ** PIKCHR (and PIC) scripts do not use many varaibles, so it is reasonable
 ** to store them all on a linked list.
@@ -610,7 +611,7 @@ static void pik_add_macro(Pik*,PToken *pId,PToken *pCode);
 **                       the minor type might be the name of the identifier.
 **                       Each non-terminal can have a different minor type.
 **                       Terminal symbols all have the same minor type, though.
-**                       This macros defines the minor type for terminal 
+**                       This macros defines the minor type for terminal
 **                       symbols.
 **    YYMINORTYPE        is the data type used for all minor types.
 **                       This is typically a union of many types, one of
@@ -701,7 +702,7 @@ typedef union {
 /* Next are the tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
 ** functions that take a state number and lookahead value and return an
-** action integer.  
+** action integer.
 **
 ** Suppose the action integer is N.  Then the action is determined as
 ** follows
@@ -1082,9 +1083,9 @@ static const YYACTIONTYPE yy_default[] = {
 };
 /********** End of lemon-generated parsing tables *****************************/
 
-/* The next table maps tokens (terminal symbols) into fallback tokens.  
+/* The next table maps tokens (terminal symbols) into fallback tokens.
 ** If a construct like the following:
-** 
+**
 **      %fallback ID X Y Z.
 **
 ** appears in the grammar, then ID becomes a fallback token for X, Y,
@@ -1256,10 +1257,10 @@ static char *yyTracePrompt = 0;
 #endif /* NDEBUG */
 
 #ifndef NDEBUG
-/* 
+/*
 ** Turn parser tracing on by giving a stream to which to write the trace
 ** and a prompt to preface each trace message.  Tracing is turned off
-** by making either argument NULL 
+** by making either argument NULL
 **
 ** Inputs:
 ** <ul>
@@ -1284,7 +1285,7 @@ void pik_parserTrace(FILE *TraceFILE, char *zTracePrompt){
 #if defined(YYCOVERAGE) || !defined(NDEBUG)
 /* For tracing shifts, the names of all terminals and nonterminals
 ** are required.  The following table supplies these names */
-static const char *const yyTokenName[] = { 
+static const char *const yyTokenName[] = {
   /*    0 */ "$",
   /*    1 */ "ID",
   /*    2 */ "EDGEPT",
@@ -1616,7 +1617,7 @@ static int yyGrowStack(yyParser *p){
 #endif
     p->yystksz = newSize;
   }
-  return pNew==0; 
+  return pNew==0;
 }
 #endif
 
@@ -1658,7 +1659,7 @@ void pik_parserInit(void *yypRawParser pik_parserCTX_PDECL){
 }
 
 #ifndef pik_parser_ENGINEALWAYSONSTACK
-/* 
+/*
 ** This function allocates a new parser.
 ** The only argument is a pointer to a function which works like
 ** malloc.
@@ -1685,7 +1686,7 @@ void *pik_parserAlloc(void *(*mallocProc)(YYMALLOCARGTYPE) pik_parserCTX_PDECL){
 /* The following function deletes the "minor type" or semantic value
 ** associated with a symbol.  The symbol can be either a terminal
 ** or nonterminal. "yymajor" is the symbol code, and "yypminor" is
-** a pointer to the value to be deleted.  The code used to do the 
+** a pointer to the value to be deleted.  The code used to do the
 ** deletions is derived from the %destructor and/or %token_destructor
 ** directives of the input grammar.
 */
@@ -1700,7 +1701,7 @@ static void yy_destructor(
     /* Here is inserted the actions which take place when a
     ** terminal or non-terminal is destroyed.  This can happen
     ** when the symbol is popped from the stack during a
-    ** reduce or during error processing or when a parser is 
+    ** reduce or during error processing or when a parser is
     ** being destroyed before it is finished parsing.
     **
     ** Note: during a reduce, the only symbols destroyed are those
@@ -1762,7 +1763,7 @@ void pik_parserFinalize(void *p){
 }
 
 #ifndef pik_parser_ENGINEALWAYSONSTACK
-/* 
+/*
 ** Deallocate and destroy a parser.  Destructors are called for
 ** all stack elements before shutting the parser down.
 **
@@ -1986,7 +1987,7 @@ static void yy_shift(
     assert( yypParser->yyhwm == (int)(yypParser->yytos - yypParser->yystack) );
   }
 #endif
-#if YYSTACKDEPTH>0 
+#if YYSTACKDEPTH>0
   if( yypParser->yytos>yypParser->yystackEnd ){
     yypParser->yytos--;
     yyStackOverflow(yypParser);
@@ -2388,7 +2389,7 @@ static YYACTIONTYPE yy_reduce(
       assert( yypParser->yyhwm == (int)(yypParser->yytos - yypParser->yystack));
     }
 #endif
-#if YYSTACKDEPTH>0 
+#if YYSTACKDEPTH>0
     if( yypParser->yytos>=yypParser->yystackEnd ){
       yyStackOverflow(yypParser);
       /* The call to yyStackOverflow() above pops the stack until it is
@@ -3257,7 +3258,7 @@ void pik_parser(
 #ifdef YYERRORSYMBOL
       /* A syntax error has occurred.
       ** The response to an error depends upon whether or not the
-      ** grammar defines an error token "ERROR".  
+      ** grammar defines an error token "ERROR".
       **
       ** This is what we do if the grammar does define ERROR:
       **
@@ -3548,7 +3549,7 @@ static const struct {
 ** the Pik.pVar list, which is searched first.  Thus the new PVar entry
 ** will override this default value.
 **
-** Units are in inches, except for "color" and "fill" which are 
+** Units are in inches, except for "color" and "fill" which are
 ** interpreted as 24-bit RGB values.
 **
 ** Binary search used.  Must be kept in sorted order.
@@ -3662,7 +3663,7 @@ static void boxInit(Pik *p, PObj *pObj){
   pObj->h = pik_value(p, "boxht",5,0);
   pObj->rad = pik_value(p, "boxrad",6,0);
 }
-/* Return offset from the center of the box to the compass point 
+/* Return offset from the center of the box to the compass point
 ** given by parameter cp */
 static PPoint boxOffset(Pik *p, PObj *pObj, int cp){
   PPoint pt = cZeroPoint;
@@ -3752,7 +3753,7 @@ static void boxRender(Pik *p, PObj *pObj){
       **         ----       - y3
       **        /    \
       **       /      \     _ y2
-      **      |        |    
+      **      |        |
       **      |        |    _ y1
       **       \      /
       **        \    /
@@ -4013,7 +4014,7 @@ static void fileInit(Pik *p, PObj *pObj){
   pObj->h = pik_value(p, "fileht",6,0);
   pObj->rad = pik_value(p, "filerad",7,0);
 }
-/* Return offset from the center of the file to the compass point 
+/* Return offset from the center of the file to the compass point
 ** given by parameter cp */
 static PPoint fileOffset(Pik *p, PObj *pObj, int cp){
   PPoint pt = cZeroPoint;
@@ -4293,7 +4294,7 @@ static const PClass aClass[] = {
       /* xChop */         0,
       /* xOffset */       lineOffset,
       /* xFit */          0,
-      /* xRender */       splineRender 
+      /* xRender */       splineRender
    },
    {  /* name */          "box",
       /* isline */        0,
@@ -4304,7 +4305,7 @@ static const PClass aClass[] = {
       /* xChop */         boxChop,
       /* xOffset */       boxOffset,
       /* xFit */          boxFit,
-      /* xRender */       boxRender 
+      /* xRender */       boxRender
    },
    {  /* name */          "circle",
       /* isline */        0,
@@ -4315,7 +4316,7 @@ static const PClass aClass[] = {
       /* xChop */         circleChop,
       /* xOffset */       ellipseOffset,
       /* xFit */          circleFit,
-      /* xRender */       circleRender 
+      /* xRender */       circleRender
    },
    {  /* name */          "cylinder",
       /* isline */        0,
@@ -4337,7 +4338,7 @@ static const PClass aClass[] = {
       /* xChop */         circleChop,
       /* xOffset */       dotOffset,
       /* xFit */          0,
-      /* xRender */       dotRender 
+      /* xRender */       dotRender
    },
    {  /* name */          "ellipse",
       /* isline */        0,
@@ -4359,7 +4360,7 @@ static const PClass aClass[] = {
       /* xChop */         boxChop,
       /* xOffset */       fileOffset,
       /* xFit */          fileFit,
-      /* xRender */       fileRender 
+      /* xRender */       fileRender
    },
    {  /* name */          "line",
       /* isline */        1,
@@ -4414,10 +4415,10 @@ static const PClass aClass[] = {
       /* xChop */         boxChop,
       /* xOffset */       textOffset,
       /* xFit */          boxFit,
-      /* xRender */       boxRender 
+      /* xRender */       boxRender
    },
 };
-static const PClass sublistClass = 
+static const PClass sublistClass =
    {  /* name */          "[]",
       /* isline */        0,
       /* eJust */         0,
@@ -4427,9 +4428,9 @@ static const PClass sublistClass =
       /* xChop */         0,
       /* xOffset */       boxOffset,
       /* xFit */          0,
-      /* xRender */       0 
+      /* xRender */       0
    };
-static const PClass noopClass = 
+static const PClass noopClass =
    {  /* name */          "noop",
       /* isline */        0,
       /* eJust */         0,
@@ -4592,7 +4593,7 @@ static void pik_append_num(Pik *p, const char *z,PNum v){
 */
 static void pik_append_point(Pik *p, const char *z, PPoint *pPt){
   char buf[100];
-  snprintf(buf, sizeof(buf)-1, "%.10g,%.10g", 
+  snprintf(buf, sizeof(buf)-1, "%.10g,%.10g",
           (double)pPt->x, (double)pPt->y);
   buf[sizeof(buf)-1] = 0;
   pik_append(p, z, -1);
@@ -4704,7 +4705,7 @@ static void pik_append_arc(Pik *p, PNum r1, PNum r2, PNum x, PNum y){
   char buf[200];
   x = x - p->bbox.sw.x;
   y = p->bbox.ne.y - y;
-  snprintf(buf, sizeof(buf)-1, "A%d %d 0 0 0 %d %d", 
+  snprintf(buf, sizeof(buf)-1, "A%d %d 0 0 0 %d %d",
      pik_round(p->rScale*r1), pik_round(p->rScale*r2),
      pik_round(p->rScale*x), pik_round(p->rScale*y));
   buf[sizeof(buf)-1] = 0;
@@ -6010,8 +6011,8 @@ static int pik_text_position(int iPrev, PToken *pFlag){
     case T_ABOVE:    iRes = (iRes&~TP_VMASK) | TP_ABOVE;  break;
     case T_CENTER:   iRes = (iRes&~TP_VMASK) | TP_CENTER; break;
     case T_BELOW:    iRes = (iRes&~TP_VMASK) | TP_BELOW;  break;
-    case T_ITALIC:   iRes |= TP_ITALIC;                   break; 
-    case T_BOLD:     iRes |= TP_BOLD;                     break; 
+    case T_ITALIC:   iRes |= TP_ITALIC;                   break;
+    case T_BOLD:     iRes |= TP_BOLD;                     break;
     case T_ALIGNED:  iRes |= TP_ALIGN;                    break;
     case T_BIG:      if( iRes & TP_BIG ) iRes |= TP_XTRA;
                      else iRes = (iRes &~TP_SZMASK)|TP_BIG;   break;
@@ -7267,7 +7268,7 @@ static int pik_token_length(PToken *pToken, int bAllowCodeBlock){
     }
     case '"': {
       for(i=1; (c = z[i])!=0; i++){
-        if( c=='\\' ){ 
+        if( c=='\\' ){
           if( z[i+1]==0 ) break;
           i++;
           continue;
@@ -7368,7 +7369,7 @@ static int pik_token_length(PToken *pToken, int bAllowCodeBlock){
         return 1;
       }
     }
-    case '<': { 
+    case '<': {
       if( z[1]=='-' ){
          if( z[2]=='>' ){
            pToken->eType = T_LRARROW;
@@ -7718,7 +7719,7 @@ void pik_tokenize(Pik *p, PToken *pIn, yyParser *pParser, PToken *aParam){
         p->nCtx--;
       }
     }else if( token.eType==T_ID
-               && (token.n = (unsigned short)(sz & 0xffff), 
+               && (token.n = (unsigned short)(sz & 0xffff),
                    (pMac = pik_find_macro(p,&token))!=0)
     ){
       PToken args[9];
@@ -7731,7 +7732,7 @@ void pik_tokenize(Pik *p, PToken *pIn, yyParser *pParser, PToken *aParam){
       if( p->nCtx>=count(p->aCtx) ){
         pik_error(p, &token, "macros nested too deep");
         break;
-      } 
+      }
       pMac->inUse = 1;
       memset(args, 0, sizeof(args));
       p->aCtx[p->nCtx++] = token;
@@ -7816,6 +7817,10 @@ char *pikchr(
     s.zOut = realloc(s.zOut, s.nOut+1);
   }
   return s.zOut;
+}
+
+void leak_check(){
+  __lsan_do_recoverable_leak_check();
 }
 
 #if defined(PIKCHR_FUZZ)
@@ -7923,7 +7928,7 @@ int main(int argc, char **argv){
   int exitCode = 0;            /* What to return */
   int mFlags = 0;              /* mFlags argument to pikchr() */
   const char *zStyle = "";     /* Extra styling */
-  const char *zHtmlHdr = 
+  const char *zHtmlHdr =
     "<!DOCTYPE html>\n"
     "<html lang=\"en-US\">\n"
     "<head>\n<title>PIKCHR Test</title>\n"
@@ -8010,7 +8015,7 @@ int main(int argc, char **argv){
   if( !bSvgOnly ){
     printf("</body></html>\n");
   }
-  return exitCode ? EXIT_FAILURE : EXIT_SUCCESS; 
+  return exitCode ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 #endif /* PIKCHR_SHELL */
 
