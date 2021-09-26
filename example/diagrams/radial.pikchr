@@ -1,0 +1,28 @@
+# demo label: Cardinal headings
+   linerad = 5px
+C: circle "Center" rad 150% fill pink
+   circle "N"  at 1.0 n  of C fill white
+   arrow from C to last chop -> color red
+   circle "NE" at 1.0 ne of C fill white
+   arrow from C to last chop <- color red
+   circle "E"  at 1.0 e  of C fill white
+   arrow from C to last chop <-> color red
+   circle "SE" at 1.0 se of C fill white
+   arrow from C to last chop -> color red
+   circle "S"  at 1.0 s  of C fill white
+   arrow from C to last chop <- color red
+   circle "SW" at 1.0 sw of C fill white
+   arrow from C to last chop <-> color red
+   circle "W"  at 1.0 w  of C fill white
+   arrow from C to last chop -> color red
+   circle "NW" at 1.0 nw of C fill white
+   arrow from C to last chop <- color red
+   arrow from 2nd circle to 3rd circle chop
+   arrow from 4th circle to 3rd circle chop
+   arrow from SW to S chop <-> color red
+   circle "ESE" at 2.0 heading 112.5 from Center \
+      thickness 150% fill lightblue radius 75%
+   arrow from Center to ESE thickness 150% <-> chop color blue
+   arrow from ESE up 1.35 then to NE chop
+   line dashed <- from E.e to (ESE.x,E.y)
+   line dotted <-> thickness 50% from N to NW chop

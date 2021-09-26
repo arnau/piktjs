@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Pikchr Webassembly Demo</title>
+    <link rel="icon" href="data:,">
+    <style>
+      html, body {
+        box-sizing: border-box;
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .dark-mode {
+        background: black;
+        color: white;
+      }
+      .window {
+        margin: 1rem;
+        display: grid;
+        grid-auto-flow: column;
+        grid-gap: 1rem;
+        grid-template-columns: 1fr 1.5fr;
+      }
+      textarea {
+        width: 99%;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="window">
+      <div class="pane">
+        <h1>Pikt, a <a href="https://pikchr.org">Pikchr</a> WebAssembly wrapper</h1>
+
+        <p>
+          <select id="source-picker">
+            <option value="diagrams/radial.pikchr">radial.pikchr</option>
+            <option value="diagrams/swimlane.pikchr">swimlane.pikchr</option>
+          </select>
+          <input type="checkbox" id="dark-mode">Dark mode</input>
+        </p>
+        <textarea id="source" wrap="off" rows="35" cols="80"></textarea>
+      </div>
+      <div class="pane">
+        <div id="sink"></div>
+      </div>
+    </section>
+
+    <script type="text/javascript" src="index.js"></script>
+  </body>
+</html>

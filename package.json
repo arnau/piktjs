@@ -1,0 +1,16 @@
+{
+  "name": "pikt",
+  "version": "0.1.0",
+  "description": "A WebAssembly version of Pikchr",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --config rollup.config.js --environment BUILD:production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Arnau Siches",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "rollup": "^2.57.0"
+  }
+}

@@ -7819,10 +7819,6 @@ char *pikchr(
   return s.zOut;
 }
 
-void leak_check(){
-  __lsan_do_recoverable_leak_check();
-}
-
 #if defined(PIKCHR_FUZZ)
 #include <stdint.h>
 int LLVMFuzzerTestOneInput(const uint8_t *aData, size_t nByte){

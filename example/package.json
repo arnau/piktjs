@@ -1,0 +1,21 @@
+{
+  "name": "pikt_example",
+  "private": true,
+  "version": "0.1.0",
+  "description": "An Pikt example",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --config rollup.config.js --environment BUILD:production"
+  },
+  "author": "Arnau Siches",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "rollup": "^2.57.0",
+    "rollup-plugin-polyfill-node": "^0.7.0",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "pikt": "file:.."
+  }
+}
