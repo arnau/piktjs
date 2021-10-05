@@ -44,48 +44,149 @@ var pikt = (function (exports) {
     return result
   }
 
-  (function (document) {
-    let sourceEl = document.getElementById("source");
-    let modeToggleEl = document.getElementById("dark-mode");
-    let sourcePickerEl = document.getElementById("source-picker");
-    let sinkEl = document.getElementById("sink");
 
-    function toggleMode() {
-      const darkMode = modeToggleEl.checked;
-      const body = document.querySelector("body");
+  const diaStyles = `
+  svg {
+    display: block;
+    margin: auto;
+  }
+`;
 
-      if (darkMode) {
-        body.classList.add("dark-mode");
-      } else {
-        body.classList.remove("dark-mode");
+  function prefersScheme(scheme) {
+    const query = `(prefers-color-scheme: ${scheme})`;
+
+    return window.matchMedia && window.matchMedia(query).matches
+  }
+
+  function isDark(mode) {
+    // Always dark
+    if (mode == "dark") {
+      return true
+    }
+
+    // Delegate on system configuration
+    if (mode == "auto" && prefersScheme("dark")) {
+      return true
+    }
+
+    return false
+  }
+
+  function normaliseMode(mode) {
+    return mode == null ? "light" : mode
+  }
+
+  /**
+   * Registers the `PikDiagram` Web Component with the given name. Defaults to "pikt-diagram".
+   */
+  function definePiktDiagram(name = "pikt-diagram") {
+    /**
+     * A web component that renders the given Piktchr source as SVG.
+     */
+    class PiktDiagram extends HTMLElement {
+      constructor() {
+        super();
+        this.root = this.attachShadow({ mode: "open" });
       }
 
-      renderScript();
+      static get observedAttributes() {
+        return ["mode"]
+      }
+
+      async attributeChangedCallback(attrName, oldValue, newValue) {
+        if (newValue !== oldValue) {
+          switch (attrName) {
+          case "mode":
+            this.mode = normaliseMode(newValue);
+            break
+          default:
+            this[attrName] = this.hasAttribute(attrName);
+          }
+        }
+
+        await this.render();
+      }
+
+      async render() {
+        const darkMode = isDark(this.mode);
+        console.log(this.mode, darkMode);
+        const dia = await render(this._src, { darkMode });
+        const wrap = this.root.querySelector("div");
+
+        wrap.innerHTML = dia;
+      }
+
+      async connectedCallback() {
+        this.mode = normaliseMode(this.mode);
+        this._src = this.textContent;
+        this.textContent = null;
+        const styles = document.createElement("style");
+        styles.textContent = diaStyles;
+        this.root.append(styles);
+        this.root.append(document.createElement("div"));
+
+        await this.render();
+      }
+
+      source() {
+        return this._src
+      }
+
+      async setSource(newValue) {
+        this._src = newValue;
+        await this.render();
+      }
     }
 
-    async function renderScript() {
-      const darkMode = modeToggleEl.checked;
+    customElements.define(name, PiktDiagram);
+  }
 
-      sinkEl.innerHTML = await render(sourceEl.value, { darkMode });
+  (function (document) {
+    document.getElementById("source");
+    document.getElementById("dark-mode");
+    document.getElementById("source-picker");
+    document.getElementById("sink");
+
+    function setColorScheme() {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const root = document.querySelector("html");
+      const toggle = document.querySelector("#color-scheme");
+
+      if (isDark) {
+        root.classList.add("dark-scheme");
+        toggle.setAttribute("checked", "checked");
+      } else {
+        root.classList.add("light-scheme");
+      }
+
     }
 
-    function selectSource() {
-      const source = sourcePickerEl.options[sourcePickerEl.selectedIndex].value;
+    function toggleColorScheme() {
+      const root = document.querySelector("html");
+      const toggle = document.querySelector("#color-scheme");
 
-      fetch(source)
-        .then(response => response.text())
-        .then(data => {
-          sourceEl.value = data;
-          renderScript();
-        });
+      if (toggle.checked) {
+        root.classList.add("dark-scheme");
+        root.classList.remove("light-scheme");
+      } else {
+        root.classList.add("light-scheme");
+        root.classList.remove("dark-scheme");
+      }
     }
 
     function start() {
-      selectSource();
+      // selectSource()
 
-      sourceEl.addEventListener("input", renderScript, false);
-      sourcePickerEl.addEventListener("change", selectSource, false);
-      modeToggleEl.addEventListener("change", toggleMode, false);
+      // sourceEl.addEventListener("input", renderScript, false)
+      // sourcePickerEl.addEventListener("change", selectSource, false)
+      // modeToggleEl.addEventListener("change", toggleMode, false)
+
+      setColorScheme();
+
+      document.querySelector("#color-scheme")
+        .addEventListener("change", toggleColorScheme, false);
+
+      definePiktDiagram();
     }
 
     start();

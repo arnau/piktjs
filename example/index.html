@@ -3,48 +3,75 @@
   <head>
     <title>Pikchr Webassembly Demo</title>
     <link rel="icon" href="data:,">
-    <style>
-      html, body {
-        box-sizing: border-box;
-        font-family: sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      .dark-mode {
-        background: black;
-        color: white;
-      }
-      .window {
-        margin: 1rem;
-        display: grid;
-        grid-auto-flow: column;
-        grid-gap: 1rem;
-        grid-template-columns: 1fr 1.5fr;
-      }
-      textarea {
-        width: 99%;
-      }
-    </style>
+    <link rel="stylesheet" media="all" href="./styles.css">
   </head>
   <body>
-    <section class="window">
-      <div class="pane">
-        <h1>Pikt, a <a href="https://pikchr.org">Pikchr</a> WebAssembly wrapper</h1>
+    <article>
+      <p>
+        <input type="checkbox" id="color-scheme">Toggle color scheme</input>
+      </p>
+      <section>
+        <p>Pikt is a WebAssembly version of <a href="https://pikchr.org/">Pikchr</a>, a C89 library implementing a
+          PIC-like language.</p>
+        <figure aria-labelledby="figure-1">
+          <pikt-diagram mode="light">
+            <pre><code>
+            scale = 0.98
+            dot fill tomato color blue
+            arrow right 75px "pikchr.c" "Input"
+            box "emscripten" rad 5px fill lightyellow color darkblue
+            arrow right 75px "src/pikchr.js" "Output"
+            </code></pre>
+          </pikt-diagram>
 
-        <p>
-          <select id="source-picker">
-            <option value="diagrams/radial.pikchr">radial.pikchr</option>
-            <option value="diagrams/swimlane.pikchr">swimlane.pikchr</option>
-          </select>
-          <input type="checkbox" id="dark-mode">Dark mode</input>
-        </p>
-        <textarea id="source" wrap="off" rows="35" cols="80"></textarea>
-      </div>
-      <div class="pane">
-        <div id="sink"></div>
-      </div>
-    </section>
+          <figcaption id="figure-1">Pikt compilation flow</figcaption>
+        </figure>
 
-    <script type="text/javascript" src="index.js"></script>
+        <p>This example takes the Pikt.js library and initialises the Web Components so they can be used as HTML.</p>
+
+        <figure aria-labelledby="figure-2">
+          <pikt-diagram>
+            <pre><code>
+            lineht *= 0.4
+            $margin = lineht*2.5
+            fontscale = 1.1
+            charht *= 1.15
+            dot
+            A1: arrow right 130px "example/src/index.js" "Input"
+            box "rollup" rad 5px
+            arrow right 125px "example/index.js" "Output"
+            down
+            move to A1.c - (0, 60px)
+            box invis "import pikt" fit
+            arrow dashed from last box.n up 40px
+            </code></pre>
+          </pikt-diagram>
+
+          <figcaption id="figure-2">Example compilation flow</figcaption>
+        </figure>
+      </section>
+
+      <!--
+      <section class="window">
+        <div class="pane">
+          <h1>Pikt, a <a href="https://pikchr.org">Pikchr</a> WebAssembly wrapper</h1>
+
+          <p>
+            <select id="source-picker">
+              <option value="diagrams/radial.pikchr">radial.pikchr</option>
+              <option value="diagrams/swimlane.pikchr">swimlane.pikchr</option>
+            </select>
+            <input type="checkbox" id="dark-mode">Dark mode</input>
+          </p>
+          <textarea id="source" wrap="off" rows="35" cols="80"></textarea>
+        </div>
+        <div class="pane">
+          <div id="sink"></div>
+        </div>
+      </section>
+      -->
+
+    </article>
+    <script type="text/javascript" type="module" src="index.js"></script>
   </body>
 </html>

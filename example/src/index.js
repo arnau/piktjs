@@ -1,4 +1,4 @@
-import { render } from "pikt"
+import { render, definePiktDiagram } from "pikt"
 
 (function (document) {
   let sourceEl = document.getElementById("source")
@@ -36,12 +36,46 @@ import { render } from "pikt"
       })
   }
 
-  function start() {
-    selectSource()
+  function setColorScheme() {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    const root = document.querySelector("html")
+    const toggle = document.querySelector("#color-scheme")
 
-    sourceEl.addEventListener("input", renderScript, false)
-    sourcePickerEl.addEventListener("change", selectSource, false)
-    modeToggleEl.addEventListener("change", toggleMode, false)
+    if (isDark) {
+      root.classList.add("dark-scheme")
+      toggle.setAttribute("checked", "checked")
+    } else {
+      root.classList.add("light-scheme")
+    }
+
+  }
+
+  function toggleColorScheme() {
+    const root = document.querySelector("html")
+    const toggle = document.querySelector("#color-scheme")
+
+    if (toggle.checked) {
+      root.classList.add("dark-scheme")
+      root.classList.remove("light-scheme")
+    } else {
+      root.classList.add("light-scheme")
+      root.classList.remove("dark-scheme")
+    }
+  }
+
+  function start() {
+    // selectSource()
+
+    // sourceEl.addEventListener("input", renderScript, false)
+    // sourcePickerEl.addEventListener("change", selectSource, false)
+    // modeToggleEl.addEventListener("change", toggleMode, false)
+
+    setColorScheme()
+
+    document.querySelector("#color-scheme")
+      .addEventListener("change", toggleColorScheme, false)
+
+    definePiktDiagram()
   }
 
   start()

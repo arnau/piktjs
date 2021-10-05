@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --light-background-color: ivory;
+  --light-foreground-color: #222;
+
+  --dark-background-color: #333;
+  --dark-foreground-color: lightgreen;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: var(--dark-background-color);
+    --foreground-color: var(--dark-foreground-color);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-color: var(--light-background-color);
+    --foreground-color: var(--light-foreground-color);
+  }
+}
+
+.dark-scheme {
+  --background-color: var(--dark-background-color);
+  --foreground-color: var(--dark-foreground-color);
+}
+
+.dark-scheme pikt-diagram[mode=light] {
+  filter: invert(100%)  hue-rotate(60deg);
+}
+
+.dark-scheme pikt-diagram:not([mode]) {
+  filter: invert(100%)  hue-rotate(160deg);
+}
+
+.light-scheme pikt-diagram[mode=dark] {
+  filter: invert(100%)  hue-rotate(-60deg);
+}
+
+
+.light-scheme {
+  --background-color: var(--light-background-color);
+  --foreground-color: var(--light-foreground-color);
+}
+
+html, body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+article {
+  margin: 2rem;
+}
+
+article * + * {
+  margin-top: 1rem;
+}
+
+.window {
+  margin: 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 1.5fr;
+}
+textarea {
+  width: 99%;
+}
+
+figure {
+  max-width: 75ch;
+  margin: 4rem auto;
+  counter-increment: fig;
+}
+
+figcaption::before {
+  content: "Figure " counter(fig) ": "
+}
+
+figcaption {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid lightgrey;
+  text-align: center;
+}
+
+pikt-diagram {
+  display: block;
+  margin: 2rem auto;
+  max-width: 60ch;
+}
