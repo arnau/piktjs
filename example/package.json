@@ -16,6 +16,6 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "pikt": "file:.."
+    "@arnau/pikt": "file:.."
   }
 }

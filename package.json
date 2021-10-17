@@ -1,14 +1,23 @@
 {
-  "name": "pikt",
+  "name": "@arnau/pikt",
   "version": "0.1.0",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "description": "A WebAssembly version of Pikchr",
+  "files": [
+    "README.md",
+    "LICENCE",
+    "index.js"
+  ],
   "type": "module",
   "source": "src/index.js",
   "main": "index.js",
   "module": "index.js",
   "scripts": {
-    "build": "rollup --config rollup.config.js --environment BUILD:production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup --config rollup.config.js --environment BUILD:production"
   },
   "author": "Arnau Siches",
   "license": "MIT",

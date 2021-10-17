@@ -5,7 +5,7 @@ A JavaScript library for [Pikchr] in the browser.
 
 ## Usage
 
-After installing the library using `npm install pikt` you'll have two choices: a `render` function and a Web Component.
+After installing the library using `npm install @arnau/pikt` you'll have two choices: a `render` function and a Web Component.
 
 ## `render` function
 
