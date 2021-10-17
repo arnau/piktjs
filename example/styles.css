@@ -29,8 +29,9 @@
   --foreground-color: var(--dark-foreground-color);
 }
 
-.dark-scheme pikt-diagram[mode=light] {
-  filter: invert(100%)  hue-rotate(60deg);
+.dark-scheme pikt-diagram[mode=light],
+.dark-scheme pikt-editor {
+  filter: invert(100%);
 }
 
 .dark-scheme pikt-diagram:not([mode]) {

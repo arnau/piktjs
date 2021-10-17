@@ -2,7 +2,10 @@
   "name": "pikt",
   "version": "0.1.0",
   "description": "A WebAssembly version of Pikchr",
+  "type": "module",
+  "source": "src/index.js",
   "main": "index.js",
+  "module": "index.js",
   "scripts": {
     "build": "rollup --config rollup.config.js --environment BUILD:production",
     "test": "echo \"Error: no test specified\" && exit 1"

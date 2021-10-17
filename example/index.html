@@ -7,10 +7,77 @@
   </head>
   <body>
     <article>
-      <p>
-        <input type="checkbox" id="color-scheme">Toggle color scheme</input>
-      </p>
       <section>
+        <template id="editor-template">
+          <style>
+            * {
+              box-sizing: border-box;
+            }
+            .window {
+              display: grid;
+              grid-auto-flow: column;
+              grid-auto-columns: 1fr 1fr;
+              grid-gap: 0.5rem;
+              min-height: 40vh;
+              margin: 2rem 0 4rem;
+            }
+
+            @media (max-width: 600px) {
+              .window {
+                grid-auto-flow: row;
+              }
+            }
+
+            .pane {
+              border: 1px solid salmon;
+            }
+
+            #source {
+              border: none;
+              display: block;
+              font-family: inherit;
+              font-size: 100%;
+              height: 99%;
+              padding: 0.5rem;
+              resize: none;
+              width: 100%;
+            }
+
+            #sink {
+              padding: 1rem;
+            }
+
+            #sink svg {
+              display: block;
+              margin: auto;
+              max-width: 50%;
+            }
+          </style>
+          <div class="window">
+            <div class="pane">
+              <textarea id="source"
+                spellcheck="false" rows="10" cols="60"
+                placeholder="Write a pikchr diagram">
+circle color deeppink
+move -25px
+circle color deepskyblue
+text "foo" at 1st circle.n + (0, 10px) color deeppink
+text "bar" at 2nd circle.n + (0, 10px) color deepskyblue
+text "foobar" small small at 1st circle.e - (12px, 0)
+              </textarea>
+            </div>
+            <div class="pane" id="sink"></div>
+          </div>
+        </template>
+        <pikt-editor template="editor-template"></pikt-editor>
+        <pikt-editor></pikt-editor>
+      </section>
+
+      <section>
+        <p>
+          <input type="checkbox" id="color-scheme">Toggle color scheme</input>
+        </p>
+
         <p>Pikt is a WebAssembly version of <a href="https://pikchr.org/">Pikchr</a>, a C89 library implementing a
           PIC-like language.</p>
         <figure aria-labelledby="figure-1">
@@ -50,6 +117,7 @@
           <figcaption id="figure-2">Example compilation flow</figcaption>
         </figure>
       </section>
+
 
       <!--
       <section class="window">

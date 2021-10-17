@@ -28,6 +28,16 @@ Will render a SVG as follows
 </svg>
 ```
 
+**Note**: Using the `node` repl will require using dynamic imports and resolving an issue with `__dirname`:
+
+```js
+const path = await import("path")
+const __dirname = path.resolve()
+const pikt = await import("./index.js")
+
+await pikt.render(`box "foo"`)
+```
+
 If the process errors, for example due to a syntax mistake such as `box "pikt` (missing closing double quote), the result is the formatted error wrapped in a `div`:
 
 ```html
